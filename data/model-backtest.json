@@ -13,7 +13,7 @@
   },
   "model": {
     "accuracy": 0.6104,
-    "brier": 0.5356,
+    "brier": 0.5348,
     "logloss": 0.9133,
     "favouriteAccuracy": 0.668,
     "favouriteCount": 515

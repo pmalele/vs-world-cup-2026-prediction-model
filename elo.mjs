@@ -22,7 +22,7 @@ export function expectedScore(ratingA, ratingB, homeBonusA = 0) {
 // near real football upset frequency.
 export function expectedGoals(rating, opponent, homeBonus = 0) {
   const diff = (rating + homeBonus) - opponent;
-  const lambda = 1.35 + diff / 350;
+  const lambda = 1.35 + diff / 400;
   return Math.max(0.3, Math.min(3.5, lambda));
 }
 

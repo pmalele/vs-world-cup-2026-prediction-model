@@ -30,6 +30,9 @@ node backtest.mjs
 | When a clear favourite (p ≥ 50%) | **~67%** | — |
 | Brier score (lower = better) | **~0.54** | coin-flip 0.67 |
 
+> _Updated June 2026: widened the goal-model variance parameter (the Elo→expected-goals denominator, 350→400) for slightly better calibration. Walk-forward accuracy is unchanged at **61%**; the Brier score improves marginally. The live 48-team title odds at [cup26matches.com](https://cup26matches.com) apply additional per-team strength priors on top of this core model._
+
+
 No model is a crystal ball — football is high-variance and draws are genuinely hard. These are
 well-calibrated estimates, and we make **no claim to beat the betting market**.
 
@@ -52,11 +55,11 @@ Example:
 ```
 $ node predict.mjs spain germany
 
-  spain (Elo 2056)  vs  germany (Elo 1951)   [neutral]
+  spain (Elo 2074)  vs  germany (Elo 1927)   [neutral]
 
-  spain            win   44.8%  █████████████
-  draw                   26.1%  ████████
-  germany          win   29.1%  █████████
+  spain            win   53.2%  ████████████████
+  draw                   26.8%  ████████
+  germany          win   20.0%  ██████
 ```
 
 ## How it works
