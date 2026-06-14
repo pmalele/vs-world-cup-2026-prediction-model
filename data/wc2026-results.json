@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-13T03:51:17.736Z",
+ "updated": "2026-06-14T04:44:02.885Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -40,6 +40,51 @@
    "t1": "canada",
    "t2": "bosnia-and-herzegovina",
    "g1": 1,
+   "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-13",
+   "round": "Matchday 3",
+   "group": "Group B",
+   "team1": "Qatar",
+   "team2": "Switzerland",
+   "t1": "qatar",
+   "t2": "switzerland",
+   "g1": 1,
+   "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-13",
+   "round": "Matchday 3",
+   "group": "Group C",
+   "team1": "Brazil",
+   "team2": "Morocco",
+   "t1": "brazil",
+   "t2": "morocco",
+   "g1": 1,
+   "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-13",
+   "round": "Matchday 3",
+   "group": "Group C",
+   "team1": "Haiti",
+   "team2": "Scotland",
+   "t1": "haiti",
+   "t2": "scotland",
+   "g1": 0,
    "g2": 1,
    "pens1": null,
    "pens2": null,
