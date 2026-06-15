@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-15T06:45:10.682Z",
+ "updated": "2026-06-15T18:07:33.476Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -176,6 +176,21 @@
    "t2": "tunisia",
    "g1": 5,
    "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-15",
+   "round": "Matchday 5",
+   "group": "Group H",
+   "team1": "Spain",
+   "team2": "Cape Verde",
+   "t1": "spain",
+   "t2": "cape-verde",
+   "g1": 0,
+   "g2": 0,
    "pens1": null,
    "pens2": null,
    "status": "FT",
