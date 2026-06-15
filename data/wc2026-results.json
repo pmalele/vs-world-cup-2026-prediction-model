@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-14T23:04:47.171Z",
+ "updated": "2026-06-15T06:45:10.682Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -139,6 +139,21 @@
   {
    "date": "2026-06-14",
    "round": "Matchday 4",
+   "group": "Group E",
+   "team1": "Ivory Coast",
+   "team2": "Ecuador",
+   "t1": "ivory-coast",
+   "t2": "ecuador",
+   "g1": 1,
+   "g2": 0,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-14",
+   "round": "Matchday 4",
    "group": "Group F",
    "team1": "Netherlands",
    "team2": "Japan",
@@ -146,6 +161,21 @@
    "t2": "japan",
    "g1": 2,
    "g2": 2,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-14",
+   "round": "Matchday 4",
+   "group": "Group F",
+   "team1": "Sweden",
+   "team2": "Tunisia",
+   "t1": "sweden",
+   "t2": "tunisia",
+   "g1": 5,
+   "g2": 1,
    "pens1": null,
    "pens2": null,
    "status": "FT",
