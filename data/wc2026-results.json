@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-17T06:12:19.592Z",
+ "updated": "2026-06-17T19:02:19.080Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -295,6 +295,21 @@
    "t1": "austria",
    "t2": "jordan",
    "g1": 3,
+   "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-17",
+   "round": "Matchday 7",
+   "group": "Group K",
+   "team1": "Portugal",
+   "team2": "DR Congo",
+   "t1": "portugal",
+   "t2": "dr-congo",
+   "g1": 1,
    "g2": 1,
    "pens1": null,
    "pens2": null,
