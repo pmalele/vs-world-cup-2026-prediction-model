@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-18T18:04:29.068Z",
+ "updated": "2026-06-18T21:04:15.523Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -70,6 +70,21 @@
    "t1": "qatar",
    "t2": "switzerland",
    "g1": 1,
+   "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-18",
+   "round": "Matchday 8",
+   "group": "Group B",
+   "team1": "Switzerland",
+   "team2": "Bosnia & Herzegovina",
+   "t1": "switzerland",
+   "t2": "bosnia-and-herzegovina",
+   "g1": 4,
    "g2": 1,
    "pens1": null,
    "pens2": null,
