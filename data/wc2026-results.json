@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-20T19:02:17.557Z",
+ "updated": "2026-06-20T22:12:16.079Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -266,6 +266,21 @@
    "t2": "ecuador",
    "g1": 1,
    "g2": 0,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-20",
+   "round": "Matchday 10",
+   "group": "Group E",
+   "team1": "Germany",
+   "team2": "Ivory Coast",
+   "t1": "germany",
+   "t2": "ivory-coast",
+   "g1": 2,
+   "g2": 1,
    "pens1": null,
    "pens2": null,
    "status": "FT",
