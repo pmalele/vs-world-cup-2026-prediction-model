@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-19T21:12:20.263Z",
+ "updated": "2026-06-20T00:04:23.680Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -144,6 +144,21 @@
    "team2": "Scotland",
    "t1": "haiti",
    "t2": "scotland",
+   "g1": 0,
+   "g2": 1,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-19",
+   "round": "Matchday 9",
+   "group": "Group C",
+   "team1": "Scotland",
+   "team2": "Morocco",
+   "t1": "scotland",
+   "t2": "morocco",
    "g1": 0,
    "g2": 1,
    "pens1": null,
