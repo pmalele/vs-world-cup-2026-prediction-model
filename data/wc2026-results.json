@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-23T19:02:22.354Z",
+ "updated": "2026-06-23T22:12:18.432Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -670,6 +670,21 @@
    "t1": "ghana",
    "t2": "panama",
    "g1": 1,
+   "g2": 0,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-23",
+   "round": "Matchday 13",
+   "group": "Group L",
+   "team1": "England",
+   "team2": "Ghana",
+   "t1": "england",
+   "t2": "ghana",
+   "g1": 0,
    "g2": 0,
    "pens1": null,
    "pens2": null,
