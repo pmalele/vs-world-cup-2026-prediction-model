@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-23T22:12:18.432Z",
+ "updated": "2026-06-24T01:02:19.420Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -686,6 +686,21 @@
    "t2": "ghana",
    "g1": 0,
    "g2": 0,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-23",
+   "round": "Matchday 13",
+   "group": "Group L",
+   "team1": "Panama",
+   "team2": "Croatia",
+   "t1": "panama",
+   "t2": "croatia",
+   "g1": 0,
+   "g2": 1,
    "pens1": null,
    "pens2": null,
    "status": "FT",

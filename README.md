@@ -69,12 +69,13 @@ well-calibrated estimates, and we make **no claim to beat the betting market**.
 The model's call on **every finished match** of the tournament, updated as it happens:
 
 <!-- TRACK-RECORD:START -->
-**30/46 correct picks (65%) · avg RPS 0.148** (coin-flip ≈ 0.245) · updated 2026-06-23
+**31/47 correct picks (66%) · avg RPS 0.146** (coin-flip ≈ 0.245) · updated 2026-06-24
 
 | Date | Result | Model's pick | |
 |---|---|---|---|
 | 2026-06-23 | Portugal 5–0 Uzbekistan | Portugal 73% | ✅ |
 | 2026-06-23 | England 0–0 Ghana | England 75% | ❌ |
+| 2026-06-23 | Panama 0–1 Croatia | Croatia 64% | ✅ |
 | 2026-06-22 | France 3–0 Iraq | France 83% | ✅ |
 | 2026-06-22 | Norway 3–2 Senegal | Norway 39% | ✅ |
 | 2026-06-22 | Argentina 2–0 Austria | Argentina 66% | ✅ |
