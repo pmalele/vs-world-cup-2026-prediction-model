@@ -1,5 +1,5 @@
 {
- "updated": "2026-06-25T00:12:19.657Z",
+ "updated": "2026-06-25T03:04:31.102Z",
  "matches": [
   {
    "date": "2026-06-11",
@@ -53,6 +53,36 @@
    "team1": "Mexico",
    "team2": "South Korea",
    "t1": "mexico",
+   "t2": "south-korea",
+   "g1": 1,
+   "g2": 0,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-24",
+   "round": "Matchday 14",
+   "group": "Group A",
+   "team1": "Czech Republic",
+   "team2": "Mexico",
+   "t1": "czech-republic",
+   "t2": "mexico",
+   "g1": 0,
+   "g2": 3,
+   "pens1": null,
+   "pens2": null,
+   "status": "FT",
+   "winner": null
+  },
+  {
+   "date": "2026-06-24",
+   "round": "Matchday 14",
+   "group": "Group A",
+   "team1": "South Africa",
+   "team2": "South Korea",
+   "t1": "south-africa",
    "t2": "south-korea",
    "g1": 1,
    "g2": 0,
