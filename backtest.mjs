@@ -2,7 +2,7 @@
 // Walk-forward, OUT-OF-SAMPLE backtest of the model on real internationals (data/results.json).
 // Each match is predicted from ratings built ONLY on prior matches, then scored — no look-ahead.
 //   node backtest.mjs
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";;
 import { matchProb, expectedScore } from "./elo.mjs";
 
 const D = (f) => new URL(`./data/${f}`, import.meta.url);

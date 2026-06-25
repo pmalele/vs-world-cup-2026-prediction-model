@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37203.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vs-world-cup-2026-prediction-model", "vs-world-cup-2026-prediction-model.esproj", "{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B112A9-7615-A5B0-F62D-5AFE58FA7E0B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {800E3817-1276-4C8B-B839-3AB3A81E2E4D}
+	EndGlobalSection
+EndGlobal
