@@ -50,11 +50,20 @@ function displayFixtures() {
             } else {
                 console.log(`   👉 Matchup:    ${match.team1} vs ${match.team2}`);
             }
+            const TEAM_ALIASES = {
+                "Bosnia & Herzegovina": "Bosnia and Herzegovina",
+                "Curaçao": "Curacao",
+                "DR Congo": "Democratic Republic of the Congo" // or whatever your SEED key is
+            };
+
+            // When performing the lookup inside your calibration loop:
+            const normalizeTeamName = (name) => TEAM_ALIASES[name] || name;
 
             // Generate the model's statistical expectation
             try {
-                const homeId = match.t1 || match.team1;
-                const awayId = match.t2 || match.team2;
+                const homeId = match.t1 || normalizeTeamName(match.team1);
+                const awayId = match.t2 || normalizeTeamName(match.team2);
+                console.log(`      🔢 Slugs: ${homeId} 🆚 ${awayId}`);
                 const prediction = predictMatch(homeId, awayId);
 
                 console.log(`      📊 Expected Goals (xG):`);
@@ -66,6 +75,7 @@ function displayFixtures() {
                 console.log(`         - ${match.team2}: ${(prediction.prob2 * 100).toFixed(1)}%`);
 
             } catch (mathError) {
+                console.log(`      ⚠️  Prediction engine skipped: ${mathError.message}, ${mathError.stack}`);
                 console.log(`      ⚠️  Prediction engine skipped: Slugs not recognized.`);
             }
 

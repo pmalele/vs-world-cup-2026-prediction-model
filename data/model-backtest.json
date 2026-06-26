@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T17:04:56.804Z",
+  "generatedAt": "2026-06-26T14:11:09.658Z",
   "method": "Walk-forward out-of-sample: each match predicted from ratings built only on prior matches; Elo updated after. Burn-in skipped.",
   "totalMatches": 913,
   "evaluated": 763,

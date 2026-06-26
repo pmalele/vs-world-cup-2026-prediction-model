@@ -32,6 +32,7 @@ function exportUnifiedFlatPredictions() {
             // Base flat match layout using strict dot path notation keys
             const flatMatch = {
                 "date": match.date || 'TBD',
+                "time": match.time || '12:00', // Capture UTC baseline
                 "round": match.round || '',
                 "group": match.group || null,
                 "status": match.status,
@@ -72,6 +73,13 @@ function exportUnifiedFlatPredictions() {
             }
 
             return flatMatch;
+        });
+
+        // Sort systematically: Latest matches first, descending down to the oldest
+        processedMatches.sort((a, b) => {
+            const dateTimeA = new Date(`${a.date}T${a.time}:00Z`);
+            const dateTimeB = new Date(`${b.date}T${b.time}:00Z`);
+            return dateTimeB - dateTimeA;
         });
 
         // Encapsulate structural package array inside root data block

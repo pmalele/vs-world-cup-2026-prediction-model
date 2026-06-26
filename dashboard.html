@@ -72,7 +72,8 @@
                 <table class="min-w-full divide-y divide-gray-700">
                     <thead class="bg-gray-900/50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date / Round</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Time</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Matchup</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Model Projections (1 / X / 2)</th>
@@ -89,9 +90,72 @@
     <script>
         let tournamentData = [];
 
+        // Dictionary mapping World Cup 2026 team names to 2-letter ISO codes (Flagcdn compatible)
+        const countryIsoMap = {
+            "Algeria": "dz",
+            "Argentina": "ar",
+            "Australia": "au",
+            "Austria": "at",
+            "Belgium": "be",
+            "Bosnia & Herzegovina": "ba",
+            "Brazil": "br",
+            "Canada": "ca",
+            "Cape Verde": "cv",
+            "Colombia": "co",
+            "Croatia": "hr",
+            "Curaçao": "cw",
+            "Czech Republic": "cz",
+            "DR Congo": "cd",
+            "Ecuador": "ec",
+            "Egypt": "eg",
+            "England": "gb-eng",
+            "France": "fr",
+            "Germany": "de",
+            "Ghana": "gh",
+            "Haiti": "ht",
+            "Iran": "ir",
+            "Iraq": "iq",
+            "Ivory Coast": "ci",
+            "Japan": "jp",
+            "Jordan": "jo",
+            "Mexico": "mx",
+            "Morocco": "ma",
+            "Netherlands": "nl",
+            "New Zealand": "nz",
+            "Norway": "no",
+            "Panama": "pa",
+            "Paraguay": "py",
+            "Portugal": "pt",
+            "Qatar": "qa",
+            "Saudi Arabia": "sa",
+            "Scotland": "gb-sct",
+            "Senegal": "sn",
+            "South Africa": "za",
+            "South Korea": "kr",
+            "Spain": "es",
+            "Sweden": "se",
+            "Switzerland": "ch",
+            "Tunisia": "tn",
+            "Turkey": "tr",
+            "Uruguay": "uy",
+            "USA": "us",
+            "Uzbekistan": "uz"
+        };
+
+
+        // Helper function to render the flag image HTML element using Flagcdn
+        function getFlagHtml(countryName) {
+            const iso = countryIsoMap[countryName];
+            if (!iso) return ''; // Fallback gracefully if country not in map
+            return `<img src="https://flagcdn.com/w20/${iso}.png"
+                         srcset="https://flagcdn.com/w40/${iso}.png 2x"
+                         width="20"
+                         alt="${countryName} flag"
+                         class="inline-block rounded-sm shadow-sm mr-2" />`;
+        }
+
         async function initDashboard() {
             try {
-                // Fetch the relative JSON dataset outputted by your export script
                 const response = await fetch('./data/export-predictions.json');
                 const raw = await response.json();
                 tournamentData = raw.matches;
@@ -102,7 +166,6 @@
                 renderCharts(tournamentData);
                 renderTable(tournamentData);
 
-                // Set up table filters listeners
                 document.getElementById('table-search').addEventListener('input', handleFilters);
                 document.getElementById('table-filter').addEventListener('change', handleFilters);
 
@@ -128,25 +191,33 @@
             document.getElementById('stat-goals').innerText = totalProjectedGoals.toFixed(1);
         }
 
+        // Helper to strip HTML tags for chart labels
+        function cleanLabel(name1, name2) {
+            return `${name1} vs ${name2}`;
+        }
+
         function renderCharts(matches) {
             const upcoming = matches.filter(m => m.status !== 'FT' && !m["prediction.error"]);
 
-            // 1. Chart Data Extraction: Strongest Favorites Up Next
             const favoritesData = upcoming.map(m => {
                 const maxWinProb = Math.max(m["prediction.prob.t1Win"], m["prediction.prob.t2Win"]);
                 const favoriteTeam = m["prediction.prob.t1Win"] > m["prediction.prob.t2Win"] ? m["team1.fullName"] : m["team2.fullName"];
                 const opposingTeam = m["prediction.prob.t1Win"] > m["prediction.prob.t2Win"] ? m["team2.fullName"] : m["team1.fullName"];
-                return { label: `${favoriteTeam} vs ${opposingTeam}`, value: maxWinProb };
-            }).sort((a,b) => b.value - a.value).slice(0, 5);
+                return { label: cleanLabel(favoriteTeam, opposingTeam), value: maxWinProb };
+            }).sort((a, b) => b.value - a.value).slice(0, 5);
 
-            // 2. Chart Data Extraction: Highest Combined Goals Matches
             const highScoringData = upcoming.map(m => {
                 const totalXg = (m["prediction.xG1"] || 0) + (m["prediction.xG2"] || 0);
-                return { label: `${m["team1.fullName"]} vs ${m["team2.fullName"]}`, value: totalXg };
-            }).sort((a,b) => b.value - a.value).slice(0, 5);
+                return { label: cleanLabel(m["team1.fullName"], m["team2.fullName"]), value: totalXg };
+            }).sort((a, b) => b.value - a.value).slice(0, 5);
 
-            // Render Chart 1
-            new Chart(document.getElementById('favoritesChart'), {
+            // Clear existing charts if any to prevent canvas reusing issues
+            const chart1Node = document.getElementById('favoritesChart');
+            const chart2Node = document.getElementById('goalsChart');
+            Chart.getChart(chart1Node)?.destroy();
+            Chart.getChart(chart2Node)?.destroy();
+
+            new Chart(chart1Node, {
                 type: 'bar',
                 data: {
                     labels: favoritesData.map(d => d.label),
@@ -161,8 +232,7 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, grid: { color: '#374151' } }, x: { grid: { display: false } } } }
             });
 
-            // Render Chart 2
-            new Chart(document.getElementById('goalsChart'), {
+            new Chart(chart2Node, {
                 type: 'bar',
                 data: {
                     labels: highScoringData.map(d => d.label),
@@ -179,50 +249,88 @@
         }
 
         function renderTable(matches) {
-            const tbody = document.getElementById('fixtures-table-body');
-            tbody.innerHTML = '';
+    const tbody = document.getElementById('fixtures-table-body');
+    tbody.innerHTML = '';
 
-            matches.forEach(match => {
-                const tr = document.createElement('tr');
-                const isFT = match.status === 'FT';
+    matches.forEach(match => {
+        const tr = document.createElement('tr');
+        const isFT = match.status === 'FT';
+        
+        // Convert UTC tournament properties to South African Standard Time (SAST)
+        const utcDateTime = new Date(`${match.date}T${match.time || '12:00'}:00Z`);
+        
+        const sastDateString = utcDateTime.toLocaleDateString('en-ZA', {
+            year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Africa/Johannesburg'
+        });
+        const sastTimeString = utcDateTime.toLocaleTimeString('en-ZA', {
+            hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Africa/Johannesburg'
+        });
 
-                const statusBadge = isFT
-                    ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-900 text-emerald-200">FT (${match["realResults.g1"]} - ${match["realResults.g2"]})</span>`
-                    : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900 text-amber-200">Upcoming</span>`;
+        const statusBadge = isFT 
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-900 text-emerald-200">FT (${match["realResults.g1"]} - ${match["realResults.g2"]})</span>`
+            : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900 text-amber-200">Upcoming</span>`;
 
-                const predictionsContent = match["prediction.error"]
-                    ? `<span class="text-xs text-gray-500">Data Unavailable</span>`
-                    : `<div class="flex justify-between max-w-xs mx-auto text-xs font-mono">
-                         <span class="text-emerald-400">${match["prediction.prob.t1Win"]}%</span>
-                         <span class="text-gray-400">${match["prediction.prob.draw"]}%</span>
-                         <span class="text-amber-400">${match["prediction.prob.t2Win"]}%</span>
-                       </div>`;
+        let predictionsContent = '';
+        if (match["prediction.error"]) {
+            predictionsContent = `<span class="text-xs text-gray-500">Data Unavailable</span>`;
+        } else {
+            const p1 = match["prediction.prob.t1Win"];
+            const pDraw = match["prediction.prob.draw"];
+            const p2 = match["prediction.prob.t2Win"];
 
-                const xgContent = match["prediction.error"]
-                    ? `-`
-                    : `<span class="text-sm font-mono text-blue-400">${match["prediction.xG1"].toFixed(2)} - ${match["prediction.xG2"].toFixed(2)}</span>`;
-
-                tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        <div class="font-medium text-gray-200">${match.date}</div>
-                        <div class="text-xs text-gray-500">${match.round} ${match.group ? `• ${match.group}` : ''}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
-                        ${match["team1.fullName"]} <span class="text-gray-500 font-normal text-xs">vs</span> ${match["team2.fullName"]}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        ${statusBadge}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        ${predictionsContent}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        ${xgContent}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            predictionsContent = `
+                <div class="w-full max-w-xs mx-auto">
+                    <div class="flex justify-between text-[11px] font-mono mb-1.5 px-0.5">
+                        <span class="text-emerald-400 font-bold">${p1.toFixed(1)}%</span>
+                        <span class="text-gray-400">${pDraw.toFixed(1)}%</span>
+                        <span class="text-amber-400 font-bold">${p2.toFixed(1)}%</span>
+                    </div>
+                    <div class="w-full h-2.5 rounded-full flex overflow-hidden bg-gray-700 shadow-inner">
+                        <div style="width: ${p1}%" class="bg-emerald-500 h-full transition-all duration-500" title="${match["team1.fullName"]} Win: ${p1}%"></div>
+                        <div style="width: ${pDraw}%" class="bg-gray-500 h-full transition-all duration-500" title="Draw: ${pDraw}%"></div>
+                        <div style="width: ${p2}%" class="bg-amber-500 h-full transition-all duration-500" title="${match["team2.fullName"]} Win: ${p2}%"></div>
+                    </div>
+                </div>
+            `;
         }
+
+        const xgContent = match["prediction.error"]
+            ? `-`
+            : `<span class="text-sm font-mono text-blue-400">${match["prediction.xG1"].toFixed(2)} <span class="text-gray-600 font-normal text-xs">vs</span> ${match["prediction.xG2"].toFixed(2)}</span>`;
+
+        tr.innerHTML = `
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                <div class="font-medium text-gray-200">${sastDateString}</div>
+                <div class="text-xs text-gray-500">${match.round}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-400">
+                <div class="text-blue-400 font-semibold">${sastTimeString} <span class="text-[10px] text-gray-500 font-normal">SAST</span></div>
+                <div class="text-[11px] text-gray-500">${match.group ? match.group : 'Knockout'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                <div class="flex items-center space-x-1">
+                    <span class="inline-flex items-center text-emerald-400">
+                        ${getFlagHtml(match["team1.fullName"])}${match["team1.fullName"]}
+                    </span> 
+                    <span class="text-gray-500 font-normal text-xs px-1">vs</span> 
+                    <span class="inline-flex items-center text-amber-400">
+                        ${getFlagHtml(match["team2.fullName"])}${match["team2.fullName"]}
+                    </span>
+                </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                ${statusBadge}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                ${predictionsContent}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+                ${xgContent}
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
         function handleFilters() {
             const searchVal = document.getElementById('table-search').value.toLowerCase();
@@ -237,8 +345,8 @@
             renderTable(filtered);
         }
 
-        // Boot Up the Application Dashboard Lifecycle
         window.addEventListener('DOMContentLoaded', initDashboard);
     </script>
+
 </body>
 </html>
