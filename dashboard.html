@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Cup 2026 Model Predictions Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="h-full text-gray-100 antialiased font-sans">
+
+    <div class="min-h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <header class="border-b border-gray-800 pb-6 mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">World Cup 2026 Model Analytics</h1>
+                <p class="mt-2 text-sm text-gray-400">Live processing interface powered by Dixon-Coles Poisson & Calibrated Elo predictions.</p>
+            </div>
+            <div id="export-timestamp" class="text-xs md:text-right text-gray-500">
+                Loading data state...
+            </div>
+        </header>
+
+        <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div class="bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-700 p-5">
+                <p class="text-sm font-medium text-gray-400 truncate">Total Tournament Matches</p>
+                <p id="stat-total" class="mt-1 text-3xl font-semibold text-white">0</p>
+            </div>
+            <div class="bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-700 p-5">
+                <p class="text-sm font-medium text-gray-400 truncate">Completed Matches</p>
+                <p id="stat-finished" class="mt-1 text-3xl font-semibold text-emerald-400">0</p>
+            </div>
+            <div class="bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-700 p-5">
+                <p class="text-sm font-medium text-gray-400 truncate">Upcoming Matches</p>
+                <p id="stat-upcoming" class="mt-1 text-3xl font-semibold text-amber-400">0</p>
+            </div>
+            <div class="bg-gray-800 overflow-hidden shadow rounded-lg border border-gray-700 p-5">
+                <p class="text-sm font-medium text-gray-400 truncate">Total Projected Goals</p>
+                <p id="stat-goals" class="mt-1 text-3xl font-semibold text-blue-400">0.00</p>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                <h3 class="text-lg font-medium text-white mb-4">Highest Win Probabilities (Upcoming Matches)</h3>
+                <div class="relative h-64">
+                    <canvas id="favoritesChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                <h3 class="text-lg font-medium text-white mb-4">Top Expected High-Scoring Fixtures (Combined xG)</h3>
+                <div class="relative h-64">
+                    <canvas id="goalsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gray-800 border border-gray-700 rounded-lg shadow overflow-hidden">
+            <div class="p-6 border-b border-gray-700 bg-gray-800/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h3 class="text-lg font-medium text-white">Complete Tournament Schedule & Model Probabilities</h3>
+                <div class="flex gap-2">
+                    <input type="text" id="table-search" placeholder="Filter by country..." class="bg-gray-900 border border-gray-700 rounded-md px-4 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                    <select id="table-filter" class="bg-gray-900 border border-gray-700 rounded-md px-4 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">All Matches</option>
+                        <option value="FT">Finished (FT)</option>
+                        <option value="Upcoming">Upcoming</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-700">
+                    <thead class="bg-gray-900/50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date / Round</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Matchup</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Model Projections (1 / X / 2)</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">Projected Goals (xG1 - xG2)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fixtures-table-body" class="divide-y divide-gray-700 bg-gray-800">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let tournamentData = [];
+
+        async function initDashboard() {
+            try {
+                // Fetch the relative JSON dataset outputted by your export script
+                const response = await fetch('./data/export-predictions.json');
+                const raw = await response.json();
+                tournamentData = raw.matches;
+
+                document.getElementById('export-timestamp').innerText = `Export Data Baseline: ${new Date(raw.exportedAt).toLocaleString()}`;
+
+                renderMetrics(tournamentData);
+                renderCharts(tournamentData);
+                renderTable(tournamentData);
+
+                // Set up table filters listeners
+                document.getElementById('table-search').addEventListener('input', handleFilters);
+                document.getElementById('table-filter').addEventListener('change', handleFilters);
+
+            } catch (error) {
+                console.error("Dashboard data load error:", error);
+                document.getElementById('export-timestamp').innerHTML = `<span class="text-red-400 font-semibold">⚠️ Failed to parse data file 'data/export-predictions.json'. Make sure it exists.</span>`;
+            }
+        }
+
+        function renderMetrics(matches) {
+            const total = matches.length;
+            const finished = matches.filter(m => m.status === 'FT').length;
+            const upcoming = total - finished;
+
+            let totalProjectedGoals = 0;
+            matches.forEach(m => {
+                totalProjectedGoals += (m["prediction.xG1"] || 0) + (m["prediction.xG2"] || 0);
+            });
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-finished').innerText = finished;
+            document.getElementById('stat-upcoming').innerText = upcoming;
+            document.getElementById('stat-goals').innerText = totalProjectedGoals.toFixed(1);
+        }
+
+        function renderCharts(matches) {
+            const upcoming = matches.filter(m => m.status !== 'FT' && !m["prediction.error"]);
+
+            // 1. Chart Data Extraction: Strongest Favorites Up Next
+            const favoritesData = upcoming.map(m => {
+                const maxWinProb = Math.max(m["prediction.prob.t1Win"], m["prediction.prob.t2Win"]);
+                const favoriteTeam = m["prediction.prob.t1Win"] > m["prediction.prob.t2Win"] ? m["team1.fullName"] : m["team2.fullName"];
+                const opposingTeam = m["prediction.prob.t1Win"] > m["prediction.prob.t2Win"] ? m["team2.fullName"] : m["team1.fullName"];
+                return { label: `${favoriteTeam} vs ${opposingTeam}`, value: maxWinProb };
+            }).sort((a,b) => b.value - a.value).slice(0, 5);
+
+            // 2. Chart Data Extraction: Highest Combined Goals Matches
+            const highScoringData = upcoming.map(m => {
+                const totalXg = (m["prediction.xG1"] || 0) + (m["prediction.xG2"] || 0);
+                return { label: `${m["team1.fullName"]} vs ${m["team2.fullName"]}`, value: totalXg };
+            }).sort((a,b) => b.value - a.value).slice(0, 5);
+
+            // Render Chart 1
+            new Chart(document.getElementById('favoritesChart'), {
+                type: 'bar',
+                data: {
+                    labels: favoritesData.map(d => d.label),
+                    datasets: [{
+                        label: 'Win Probability %',
+                        data: favoritesData.map(d => d.value),
+                        backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                        borderColor: 'rgb(245, 158, 11)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, grid: { color: '#374151' } }, x: { grid: { display: false } } } }
+            });
+
+            // Render Chart 2
+            new Chart(document.getElementById('goalsChart'), {
+                type: 'bar',
+                data: {
+                    labels: highScoringData.map(d => d.label),
+                    datasets: [{
+                        label: 'Projected Combined Goals (xG)',
+                        data: highScoringData.map(d => d.value),
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#374151' } }, x: { grid: { display: false } } } }
+            });
+        }
+
+        function renderTable(matches) {
+            const tbody = document.getElementById('fixtures-table-body');
+            tbody.innerHTML = '';
+
+            matches.forEach(match => {
+                const tr = document.createElement('tr');
+                const isFT = match.status === 'FT';
+
+                const statusBadge = isFT
+                    ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-900 text-emerald-200">FT (${match["realResults.g1"]} - ${match["realResults.g2"]})</span>`
+                    : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-900 text-amber-200">Upcoming</span>`;
+
+                const predictionsContent = match["prediction.error"]
+                    ? `<span class="text-xs text-gray-500">Data Unavailable</span>`
+                    : `<div class="flex justify-between max-w-xs mx-auto text-xs font-mono">
+                         <span class="text-emerald-400">${match["prediction.prob.t1Win"]}%</span>
+                         <span class="text-gray-400">${match["prediction.prob.draw"]}%</span>
+                         <span class="text-amber-400">${match["prediction.prob.t2Win"]}%</span>
+                       </div>`;
+
+                const xgContent = match["prediction.error"]
+                    ? `-`
+                    : `<span class="text-sm font-mono text-blue-400">${match["prediction.xG1"].toFixed(2)} - ${match["prediction.xG2"].toFixed(2)}</span>`;
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                        <div class="font-medium text-gray-200">${match.date}</div>
+                        <div class="text-xs text-gray-500">${match.round} ${match.group ? `• ${match.group}` : ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                        ${match["team1.fullName"]} <span class="text-gray-500 font-normal text-xs">vs</span> ${match["team2.fullName"]}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                        ${statusBadge}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        ${predictionsContent}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        ${xgContent}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleFilters() {
+            const searchVal = document.getElementById('table-search').value.toLowerCase();
+            const filterVal = document.getElementById('table-filter').value;
+
+            const filtered = tournamentData.filter(m => {
+                const matchesSearch = m["team1.fullName"].toLowerCase().includes(searchVal) || m["team2.fullName"].toLowerCase().includes(searchVal);
+                const matchesStatus = filterVal === 'all' || m.status === filterVal;
+                return matchesSearch && matchesStatus;
+            });
+
+            renderTable(filtered);
+        }
+
+        // Boot Up the Application Dashboard Lifecycle
+        window.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
